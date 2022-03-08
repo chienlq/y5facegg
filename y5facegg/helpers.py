@@ -2,6 +2,7 @@ from pathlib import Path
 
 from y5facegg.models.yolo import Model
 from y5facegg.models.experimental import attempt_load
+from y5facegg.utils.general import y5face_in_syspath
 from y5facegg.utils.torch_utils import select_device
 from y5facegg.utils.detect_utils import detect_one
 import torch
@@ -20,7 +21,10 @@ def load_model(model_path, device=None):
 #    if device is None:
 #        device = "cuda:0" if torch.cuda.is_available() else "cpu"
 #    device = select_device(device)
-    model = attempt_load(model_path, map_location=device)  # load FP32 model
+    with y5face_in_syspath():
+        #model = torch.load(model_path, map_location=torch.device(device))
+        #model = torch.load(model_path, map_location=device)
+        model = attempt_load(model_path, map_location=device)  # load FP32 model
     return model
 
 

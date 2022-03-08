@@ -1,5 +1,6 @@
 # General utils
 
+import contextlib
 import glob
 import logging
 import math
@@ -15,6 +16,7 @@ import numpy as np
 import torch
 import torchvision
 import yaml
+import sys
 
 from y5facegg.utils.google_utils import gsutil_getsize
 from y5facegg.utils.metrics import fitness
@@ -644,3 +646,21 @@ def increment_path(path, exist_ok=True, sep=''):
         i = [int(m.groups()[0]) for m in matches if m]  # indices
         n = max(i) + 1 if i else 2  # increment number
         return f"{path}{sep}{n}"  # update path
+
+
+@contextlib.contextmanager
+def y5face_in_syspath():
+    """
+    Temporarily add yolov5 folder to `sys.path`.
+    
+    torch.hub handles it in the same way: https://github.com/pytorch/pytorch/blob/75024e228ca441290b6a1c2e564300ad507d7af6/torch/hub.py#L387
+    
+    Proper fix for: #22, #134, #353, #1155, #1389, #1680, #2531, #3071   
+    No need for such workarounds: #869, #1052, #2949
+    """
+    yolov5_folder_dir = str(Path(__file__).parents[1].absolute())
+    try:
+        sys.path.insert(0, yolov5_folder_dir)
+        yield
+    finally:
+        sys.path.remove(yolov5_folder_dir)
