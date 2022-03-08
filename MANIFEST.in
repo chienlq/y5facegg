@@ -8,7 +8,7 @@ include LICENSE
 include setup.py
 
 # Include the data files
-recursive-include y5gg/data *
+recursive-include y5facegg/data *
 
 # Include the yml files in models folder
-recursive-include y5gg/models *
+recursive-include y5facegg/models *
