@@ -5,6 +5,7 @@ from y5facegg.models.experimental import attempt_load
 from y5facegg.utils.general import y5face_in_syspath
 from y5facegg.utils.torch_utils import select_device
 from y5facegg.utils.detect_utils import detect_one
+from y5facegg.utils.visualize_utils import visualize_detections
 import torch
 
 def load_model(model_path, device=None):
@@ -55,8 +56,8 @@ class Y5FACE:
         Perform yolov5 prediction using loaded model weights.
         """
         assert self.model is not None, "before predict, you need to call .load_model()"
-        res_img = detect_one(self.model, bgr_image, device=self.device, img_size=size)
-        return res_img
+        detections = detect_one(self.model, bgr_image, device=self.device, img_size=size)
+        return detections
 
 if __name__ == "__main__":
     model_path = 'weights/yolov5s-face.pt'
@@ -65,6 +66,8 @@ if __name__ == "__main__":
     image_path = 'data/images/test.jpg'
     bgr_image = cv2.imread(image_path)
     
-    res_img = model.predict(bgr_image)
+    detections = model.predict(bgr_image)
+    
+    res_img = visualize_one(bgr_image, detections)
     
     cv2.imwrite('result2.jpg', res_img)
